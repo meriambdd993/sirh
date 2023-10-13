@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats</title>
+    <style>
+        body {
+            background-color: #f3f3f3;
+            font-family: 'Arial', sans-serif;
+            color: #4a4a4a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #6a2c70;
+            font-size: 32px;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #6a2c70;
+            color: #fff;
+        }
+        button {
+            background-color: #6a2c70;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #432b57;
+        }
+    </style>
+</head>
+<body>
+    <h1>Résultats</h1>
+    <table>
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="selectAll"></th>
+                <th>Image</th>
+                <th>Matricule</th>
+                <th>Titre</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Mois</th>
+                <th>Lien PDF</th>
+                <th><input type="checkbox" id="signAll"> Signer</th>
+            </tr>
+        </thead>
+        <tbody id="resultsBody">
+            <!-- Les données seront insérées ici avec JavaScript -->
+        </tbody>
+    </table>
+    <button onclick="distribute()">Distribuer</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = JSON.parse(sessionStorage.getItem('pdfData'));
+            const tableBody = document.getElementById('resultsBody');
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                const checkboxCell = document.createElement('td');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'select' + index;
+                checkboxCell.appendChild(checkbox);
+                row.appendChild(checkboxCell);
+                
+                // Ajout de la colonne Image
+                const imageCell = document.createElement('td');
+                imageCell.textContent = 'Votre image ou lien ici'; 
+                row.appendChild(imageCell);
+
+                ['Matricule', 'Titre', 'Nom', 'Prénom', 'Mois'].forEach(key => {
+                    const cell = document.createElement('td');
+                    cell.textContent = item[key];
+                    row.appendChild(cell);
+                });
+
+                // Ajout de la colonne Lien PDF
+                const pdfLinkCell = document.createElement('td');
+                const pdfLink = document.createElement('a');
+                pdfLink.href = item['PageLink']; 
+                pdfLink.textContent = 'Voir PDF';
+                pdfLink.target = '_blank';
+                pdfLinkCell.appendChild(pdfLink);
+                row.appendChild(pdfLinkCell);
+
+                // Ajout de la colonne Signer avec une case à cocher
+                const signCell = document.createElement('td');
+                const signCheckbox = document.createElement('input');
+                signCheckbox.type = 'checkbox';
+                signCheckbox.id = 'sign' + index;
+                signCell.appendChild(signCheckbox);
+                row.appendChild(signCell);
+
+                tableBody.appendChild(row);
+            });
+
+            // Sélectionner/désélectionner toutes les cases à cocher
+            document.getElementById('selectAll').addEventListener('change', (e) => {
+                const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = e.target.checked);
+            });
+
+            // Sélectionner/désélectionner toutes les cases à cocher pour signer
+            document.getElementById('signAll').addEventListener('change', (e) => {
+                const signCheckboxes = document.querySelectorAll('tbody td:nth-child(9) input[type="checkbox"]');
+                signCheckboxes.forEach(cb => cb.checked = e.target.checked);
+            });
+        });
+
+        function distribute() {
+            // Logique pour la distribution
+            alert('Distribuer les éléments cochés.');
+        }
+    </script>
+</body>
+</html>
+
