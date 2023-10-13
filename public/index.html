@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body {
+            background-color: #f3f3f3;
+            font-family: 'Arial', sans-serif;
+            color: #4a4a4a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #6a2c70;
+            font-size: 32px;
+        }
+        button {
+            background-color: #6a2c70;
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #432b57;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        pre {
+            background-color: #ced4da;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test API</h1>
+    <input type="file" id="pdfInput" accept=".pdf" multiple>
+    <button onclick="uploadPDFs()">Extraire</button>
+    <pre id="output"></pre>
+
+    <script>
+        async function uploadPDFs() {
+            const pdfInput = document.getElementById('pdfInput');
+            if (pdfInput.files.length === 0) {
+                alert('Veuillez choisir au moins un fichier PDF.');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('pdf', pdfInput.files[0]);
+            try {
+                const response = await fetch('http://localhost:3000/api/upload-pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                sessionStorage.setItem('pdfData', JSON.stringify(data));
+                window.location.href = 'results.html';
+            } catch (error) {
+                alert('Erreur : ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+
+
